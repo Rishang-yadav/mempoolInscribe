@@ -6,6 +6,7 @@ import { bytesToHex } from "@/utils/Inscribe";
 import { Tap, Script, Address, Signer, Tx } from "@cmdcode/tapscript";
 import { ICreateInscription, IDoc } from "@/types";
 import mime from "mime-types";
+import { generateUnsignedPsbtForInscription } from "@/utils/psbt";
 
 
 export async function POST(req: NextRequest) {
@@ -67,7 +68,7 @@ export async function POST(req: NextRequest) {
 
       console.log("Zero");
 
-      const data = {
+      const data : Record<string, any> = {
         ...inscriptions
       };
 
@@ -77,7 +78,21 @@ export async function POST(req: NextRequest) {
 
       console.log("dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:::::::::::::::::::", data)
 
+
   
+
+      const inscription: Record<string, any> = data; // doc
+
+      const { psbt } = await generateUnsignedPsbtForInscription(
+         cardinal_address,
+         cardinal_pubkey,
+         265,
+         wallet,
+         [inscription],
+       );
+       console.log({ psbt });
+       data.psbt = psbt;
+       await dbConnect();
       const response = await FileData.create(data);
 
 
@@ -204,7 +219,7 @@ async function processInscriptions(doc: IDoc, network: "testnet" | "mainnet") {
   const pubkey = cryptoTools.keys.get_pubkey(seckey);
 
   const mimetype = doc.fileData.type || "text/plain;charset=utf-8";
-  const base64data = doc.fileData.dataUrl.split(",")[1];
+  const base64data = doc.fileData.dataUrl;
   const data = Buffer.from(base64data, "base64");
 
   const script = [

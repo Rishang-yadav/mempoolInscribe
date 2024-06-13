@@ -34,6 +34,7 @@ async function findOrder() {
  * @returns {Promise<Object>} A promise that resolves to an object containing transaction details.
  */
 async function processInscription(inscription: ICreateInscription) {
+  //ts-ignore
   const KeyPair = cryptoUtils.KeyPair;
   const seckey = new KeyPair(inscription.privkey);
   const pubkey = seckey.pub.rawX;
@@ -56,9 +57,9 @@ async function processInscription(inscription: ICreateInscription) {
   }
   console.log({ inscription, txinfo });
 
-  const data = Buffer.from(inscription.base64, "base64");
+  const data = Buffer.from(inscription.dataUrl, "base64");
 
-  console.log({ mimetype: inscription.file_type });
+  console.log({ mimetype: inscription.type });
 
   const script = [
     pubkey,
@@ -67,11 +68,10 @@ async function processInscription(inscription: ICreateInscription) {
     "OP_IF",
     ec.encode("ord"),
     "01",
-    ec.encode(inscription.file_type),
+    ec.encode(inscription.type),
     "OP_0",
      data,
-      "OP_ENDIF"
-
+    "OP_ENDIF"
   ];
 
   const redeemtx = Tx.create({

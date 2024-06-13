@@ -63,7 +63,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     }
 
     // agr success hota h, then update the status
-    fetchedPendingInscription.status = "funded";
+    fetchedPendingInscription.status = "payment received";
     await fetchedPendingInscription.save();
 
     return NextResponse.json(

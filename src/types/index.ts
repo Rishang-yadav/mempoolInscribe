@@ -15,9 +15,9 @@ export interface ICreateInscription extends IDoc {
     order_id: string;
     privkey: string;
     ordinal_address: string;
-    file_type: string;
-    base64: string;
-    file_size: number;
+    type: string;
+    dataUrl: string;
+    size: number;
     inscription_address: string;
     txid: string;
     leaf: string;
@@ -51,21 +51,7 @@ export interface ICreateInscription extends IDoc {
     inscription_fee?:number
   }
   
-  
-  export interface IDocProcessed extends IDoc {
-    privkey: string;
-    file_type: string;
-    file_size: number;
-    inscription_address: string;
-    txid: string;
-    leaf: string;
-    tapkey: string;
-    cblock: string;
-    inscription_fee: number;
-    inscription_id: string;
-    network: "testnet" | "mainnet";
-  }
-  
+
   export interface IInscribeOrder {
     _id?: string;
     order_id: string;
